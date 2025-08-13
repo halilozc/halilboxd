@@ -39,6 +39,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+        provider.addScope('email');
+        provider.addScope('profile');
 
         // Make Firebase functions available globally
         window.auth = auth;
@@ -319,6 +321,8 @@
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+        provider.addScope('email');
+        provider.addScope('profile');
 
         // Make auth and firestore available globally
         window.auth = auth;
