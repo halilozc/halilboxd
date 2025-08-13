@@ -181,8 +181,8 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## 📞 İletişim
 
-- **GitHub**: [@kullaniciadi](https://github.com/kullaniciadi)
-- **E-posta**: kullanici@email.com
+- **GitHub**: [@halilozcc](https://github.com/halilozcc)
+- **E-posta**: halilozccc@gmail.com
 
 ## 🔄 Güncellemeler
 
