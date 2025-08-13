@@ -3,9 +3,9 @@ const fetch = require('node-fetch');
 const path = require('path');
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
-const OMDB_API_KEY = 'dba94306';
+const OMDB_API_KEY = process.env.OMDB_API_KEY || 'dba94306';
 
 // Statik dosyaları sunmak için (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
