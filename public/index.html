@@ -132,12 +132,17 @@
             <div class="search-header">
                 <h1 class="light-logo" id="logo" style="cursor: pointer;">halilboxd</h1>
                 <div class="user-welcome" id="userWelcome" style="display: none;">
-                    <h2 class="light-logo-small" style="cursor: pointer;">Hoş geldin, <span id="userDisplayName"></span>!</h2>
+                    <h2 class="light-logo-small" style="cursor: pointer;"><span id="userDisplayName"></span> hoş geldin knk</h2>
                 </div>
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-input" placeholder="">
-                    <button id="search-btn">Ara</button>
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="search-input" placeholder="">
+                        <button id="search-btn">Ara</button>
+                    </div>
+                    <button id="calendar-btn" class="calendar-button" title="Takvim">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
                 </div>
             </div>
             
@@ -291,6 +296,88 @@
                         <span class="info-label">Özet:</span>
                         <p id="modalPlot"></p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Modal -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content calendar-modal">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-calendar-alt"></i>
+                    Takvim
+                </h2>
+                <button class="modal-close" onclick="closeCalendarModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="diary-container">
+                    <div class="diary-filters">
+                        <button class="filter-btn active" data-filter="all">Tümü</button>
+                        <button class="filter-btn" data-filter="movies">Filmler</button>
+                        <button class="filter-btn" data-filter="shows">Diziler</button>
+                    </div>
+                    <div id="monthlyEvents" class="events-list diary-list">
+                        <!-- Günlük kayıtları JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diary Entry Modal -->
+    <div id="diaryModal" class="modal">
+        <div class="modal-content diary-entry-modal">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-book-open"></i>
+                    İzleme Günlüğü Kaydı
+                </h2>
+                <button class="modal-close" onclick="closeDiaryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="diary-form">
+                    <div class="form-group">
+                        <label for="diaryTitle">İçerik Adı</label>
+                        <input type="text" id="diaryTitle" placeholder="Film veya dizi adını girin" readonly disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="diaryType">Tür</label>
+                        <select id="diaryType" disabled>
+                            <option value="movie">Film</option>
+                            <option value="show">Dizi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="diaryDate">İzleme Tarihi</label>
+                        <input type="date" id="diaryDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="diaryRating">Puanınız</label>
+                        <div class="rating-input">
+                            <div class="hearts">
+                                <i class="fa-solid fa-heart" data-rating="1"></i>
+                                <i class="fa-solid fa-heart" data-rating="2"></i>
+                                <i class="fa-solid fa-heart" data-rating="3"></i>
+                                <i class="fa-solid fa-heart" data-rating="4"></i>
+                                <i class="fa-solid fa-heart" data-rating="5"></i>
+                            </div>
+                            <span class="rating-text">Puan seçin</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="saveDiaryEntry" class="save-btn">Kaydet</button>
+                        <button onclick="closeDiaryModal()" class="cancel-btn">İptal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
                 </div>
             </div>
         </div>

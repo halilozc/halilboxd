@@ -98,6 +98,530 @@ const handleLogout = async () => {
     }
 };
 
+// Global flag for filter button listeners
+let filterListenersAdded = false;
+
+// Calendar button click handler
+const handleCalendarClick = async () => {
+    await openCalendarModal();
+    
+    // Filter buttons event listeners - sadece bir kez ekle
+    if (!filterListenersAdded) {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                await renderMonthlyEvents();
+            });
+        });
+        filterListenersAdded = true;
+    }
+};
+
+// Calendar modal functions
+const openCalendarModal = async () => {
+    document.getElementById('calendarModal').style.display = 'block';
+    await renderMonthlyEvents();
+};
+
+const closeCalendarModal = () => {
+    document.getElementById('calendarModal').style.display = 'none';
+};
+
+// Diary data structure
+let diaryEntries = [
+    {
+        id: 1,
+        title: 'Batman',
+        type: 'movie',
+        date: '2024-01-15',
+        rating: 4,
+        review: 'Harika bir film! Christian Bale mükemmel bir Batman.',
+        day: 15
+    },
+    {
+        id: 2,
+        title: 'Breaking Bad',
+        type: 'show',
+        date: '2024-01-22',
+        rating: 5,
+        review: 'Tüm zamanların en iyi dizisi. Bryan Cranston muhteşem.',
+        day: 22
+    },
+    {
+        id: 3,
+        title: 'Inception',
+        type: 'movie',
+        date: '2024-01-28',
+        rating: 5,
+        review: 'Zihin bükücü bir deneyim. Christopher Nolan dehası.',
+        day: 28
+    }
+];
+
+// Global değişkenler
+let isEditingDiary = false;
+let currentEditingId = null;
+
+const getMonthlyEvents = () => {
+    // Ana sayfadaki izlenen filmler ve dizilerden bilgileri çek
+    const watchedMovies = favorites.watchedMovies || [];
+    const watchedShows = favorites.watchedShows || [];
+    
+    // Tüm izlenen içerikleri birleştir
+    const allWatched = [
+        ...watchedMovies.map(item => ({
+            id: item.imdbID,
+            title: item.Title,
+            type: 'movie',
+            date: item.watchedDate || new Date().toISOString().split('T')[0],
+            rating: favorites.userRatings[item.imdbID] || 0,
+            review: item.review || '',
+            day: new Date(item.watchedDate || Date.now()).getDate(),
+            poster: item.Poster,
+            year: item.Year
+        })),
+        ...watchedShows.map(item => ({
+            id: item.imdbID,
+            title: item.Title,
+            type: 'show',
+            date: item.watchedDate || new Date().toISOString().split('T')[0],
+            rating: favorites.userRatings[item.imdbID] || 0,
+            review: item.review || '',
+            day: new Date(item.watchedDate || Date.now()).getDate(),
+            poster: item.Poster,
+            year: item.Year
+        }))
+    ];
+    
+    // Tarihe göre sırala (en yeni önce)
+    allWatched.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Eğer hiç izlenen içerik yoksa, örnek verileri göster
+    if (allWatched.length === 0) {
+        return diaryEntries;
+    }
+    
+    return allWatched;
+};
+
+const renderMonthlyEvents = async () => {
+    const eventsContainer = document.getElementById('monthlyEvents');
+    const events = getMonthlyEvents();
+    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+    
+    eventsContainer.innerHTML = '';
+    
+    // Filter events based on active filter
+    let filteredEvents = events;
+    if (activeFilter === 'movies') {
+        filteredEvents = events.filter(event => event.type === 'movie');
+    } else if (activeFilter === 'shows') {
+        filteredEvents = events.filter(event => event.type === 'show');
+    }
+    
+    if (filteredEvents.length === 0) {
+        eventsContainer.innerHTML = '<p style="color: #666; text-align: center;">Bu ay henüz izlenen içerik yok.</p>';
+        return;
+    }
+    
+    // Ayları grupla ve sırala
+    const eventsByMonth = {};
+    filteredEvents.forEach(event => {
+        const eventDate = new Date(event.date);
+        const monthKey = `${eventDate.getFullYear()}-${eventDate.getMonth()}`;
+        const monthName = eventDate.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+        
+        if (!eventsByMonth[monthKey]) {
+            eventsByMonth[monthKey] = {
+                monthName: monthName,
+                events: []
+            };
+        }
+        eventsByMonth[monthKey].events.push(event);
+    });
+    
+    // Ayları tarihe göre sırala (en yeni önce)
+    const sortedMonths = Object.keys(eventsByMonth).sort((a, b) => {
+        const [yearA, monthA] = a.split('-').map(Number);
+        const [yearB, monthB] = b.split('-').map(Number);
+        return new Date(yearB, monthB) - new Date(yearA, monthA);
+    });
+    
+    // Her ay için başlık ve kartları oluştur
+    for (const monthKey of sortedMonths) {
+        const monthData = eventsByMonth[monthKey];
+        
+        // Ay başlığını ekle
+        const monthHeader = document.createElement('div');
+        monthHeader.className = 'month-header';
+        monthHeader.innerHTML = `
+            <h3 class="month-title">
+                <i class="fas fa-calendar-alt"></i>
+                ${monthData.monthName}
+            </h3>
+        `;
+        eventsContainer.appendChild(monthHeader);
+        
+        // Bu ayın eventlerini ekle
+        for (const event of monthData.events) {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'event-item';
+        
+        const typeText = event.type === 'movie' ? 'Film' : 'Dizi';
+        const typeIcon = event.type === 'movie' ? 'fas fa-film' : 'fas fa-tv';
+        
+        // Poster varsa göster, yoksa ikon göster
+        const posterContent = event.poster && event.poster !== 'N/A' ? 
+            `<img src="${event.poster}" alt="${event.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` :
+            '';
+        
+        // Tarih bilgilerini hazırla
+        const eventDate = new Date(event.date);
+        const month = eventDate.toLocaleDateString('tr-TR', { month: 'long' }).toUpperCase();
+        const day = eventDate.getDate();
+        const year = eventDate.getFullYear();
+        
+        // Kalp ikonları için rating - Font Awesome kalpleri kullan
+        const heartRating = event.rating > 0 ? 
+            '<i class="fa-solid fa-heart text-red-500"></i>'.repeat(event.rating) + 
+            '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5 - event.rating) :
+            '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5);
+        
+        eventElement.innerHTML = `
+            <div class="event-content">
+                <div class="event-poster">
+                    ${posterContent}
+                    <i class="${typeIcon}" style="${event.poster && event.poster !== 'N/A' ? 'display: none;' : 'display: flex;'}"></i>
+                </div>
+                <div class="event-details">
+                    <div class="event-title">${event.title}</div>
+                    <div class="event-meta">
+                        <span>${event.year || year}</span>
+                    </div>
+                    <div class="event-rating">
+                        ${heartRating}
+                    </div>
+                    ${event.review ? `<div class="event-review">"${event.review}"</div>` : ''}
+                </div>
+            </div>
+            <div class="event-date-block">
+                <p class="event-month">${month}</p>
+                <p class="event-day">${day}</p>
+                <p class="event-year">${year}</p>
+            </div>
+        `;
+        
+        // Kartın tıklanabilir olması için event listener ekle
+        eventElement.style.cursor = 'pointer';
+        eventElement.addEventListener('click', (e) => {
+            // Eğer tıklanan element action butonu değilse düzenleme modalını aç
+            if (!e.target.closest('.action-btn')) {
+                editDiaryEntry(event.id);
+            }
+        });
+        
+        // DOM'a ekle
+        eventsContainer.appendChild(eventElement);
+        
+        // Dominant renk uygula (eğer poster varsa)
+        if (event.poster && event.poster !== 'N/A' && event.poster !== './yok.PNG') {
+            try {
+                const dominantColor = await getDominantColor(event.poster);
+                const textColor = getContrastColor(dominantColor);
+                
+                // Koyu kenarlık rengi oluştur (dominant rengin %30 daha koyu versiyonu)
+                const darkerColor = getDarkerColor(dominantColor, 0.3);
+                
+                // Kart arka planını ayarla
+                eventElement.style.backgroundColor = dominantColor;
+                
+                // Kenarlık rengini ayarla
+                eventElement.style.borderColor = darkerColor;
+                
+                // Metin renklerini ayarla
+                const title = eventElement.querySelector('.event-title');
+                const meta = eventElement.querySelector('.event-meta');
+                const monthText = eventElement.querySelector('.event-month');
+                const dayText = eventElement.querySelector('.event-day');
+                const yearText = eventElement.querySelector('.event-year');
+                
+                if (title) title.style.color = textColor;
+                if (meta) meta.style.color = textColor;
+                if (monthText) monthText.style.color = textColor;
+                if (dayText) dayText.style.color = textColor;
+                if (yearText) yearText.style.color = textColor;
+                
+            } catch (error) {
+                console.error('Takvim kartı renk uygulama hatası:', error);
+            }
+        }
+    }
+    }
+};
+
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = getMonthName(date.getMonth());
+    return `${day} ${month}`;
+};
+
+const getMonthName = (month) => {
+    const monthNames = [
+        'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+        'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ];
+    return monthNames[month];
+};
+
+// Diary Modal Functions
+const openDiaryModal = () => {
+    document.getElementById('diaryModal').style.display = 'block';
+    document.getElementById('diaryDate').value = new Date().toISOString().split('T')[0];
+    setupRatingStars();
+};
+
+const closeDiaryModal = () => {
+    document.getElementById('diaryModal').style.display = 'none';
+    
+    // Düzenleme modunu sıfırla
+    isEditingDiary = false;
+    currentEditingId = null;
+    
+    resetDiaryForm();
+};
+
+const setupRatingStars = () => {
+    const stars = document.querySelectorAll('.stars i');
+    const hearts = document.querySelectorAll('.hearts i');
+    const ratingText = document.querySelector('.rating-text');
+    let selectedRating = 0;
+
+    // Yıldız ikonları için (eski sistem)
+    if (stars.length > 0) {
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                selectedRating = index + 1;
+                updateStars(selectedRating);
+                updateRatingText(selectedRating);
+            });
+
+            star.addEventListener('mouseenter', () => {
+                updateStars(index + 1);
+            });
+
+            star.addEventListener('mouseleave', () => {
+                updateStars(selectedRating);
+            });
+        });
+
+        function updateStars(rating) {
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < rating);
+            });
+        }
+    }
+
+    // Kalp ikonları için (yeni sistem)
+    if (hearts.length > 0) {
+        hearts.forEach((heart, index) => {
+            heart.addEventListener('click', () => {
+                selectedRating = index + 1;
+                updateHearts(selectedRating);
+                updateRatingText(selectedRating);
+            });
+
+            heart.addEventListener('mouseenter', () => {
+                updateHearts(index + 1);
+            });
+
+            heart.addEventListener('mouseleave', () => {
+                updateHearts(selectedRating);
+            });
+        });
+
+        function updateHearts(rating) {
+            hearts.forEach((heart, index) => {
+                heart.classList.toggle('active', index < rating);
+            });
+        }
+    }
+
+    function updateRatingText(rating) {
+        const texts = ['Puan seçin', 'Çok kötü', 'Kötü', 'Orta', 'İyi', 'Mükemmel'];
+        ratingText.textContent = texts[rating] || 'Puan seçin';
+    }
+};
+
+const resetDiaryForm = () => {
+    document.getElementById('diaryType').value = 'movie';
+    document.getElementById('diaryDate').value = new Date().toISOString().split('T')[0];
+    
+    // Reset stars and hearts
+    document.querySelectorAll('.stars i').forEach(star => star.classList.remove('active'));
+    document.querySelectorAll('.hearts i').forEach(heart => heart.classList.remove('active'));
+    document.querySelector('.rating-text').textContent = 'Puan seçin';
+};
+
+const saveDiaryEntry = () => {
+    const title = document.getElementById('diaryTitle').value.trim();
+    const type = document.getElementById('diaryType').value;
+    const date = document.getElementById('diaryDate').value;
+    const rating = document.querySelectorAll('.stars i.active').length || document.querySelectorAll('.hearts i.active').length;
+
+    if (!date || rating === 0) {
+        showNotification('Lütfen izleme tarihini ve puanınızı seçin!', 'error');
+        return;
+    }
+
+    // Eğer düzenleme modundaysa, mevcut kaydı güncelle
+    if (isEditingDiary && currentEditingId) {
+        updateDiaryEntry(currentEditingId);
+        return;
+    }
+
+    // Yeni kayıt için benzersiz ID oluştur
+    const newId = Date.now().toString();
+    
+    // Ana sayfadaki izlenen listelerine ekle
+    const watchedItem = {
+        imdbID: newId,
+        Title: title,
+        Poster: '', // Poster yoksa boş bırak
+        Year: new Date(date).getFullYear().toString(),
+        Type: type === 'movie' ? 'movie' : 'series',
+        watchedDate: date
+    };
+
+    if (type === 'movie') {
+        if (!favorites.watchedMovies.find(m => m.imdbID === newId)) {
+            favorites.watchedMovies.push(watchedItem);
+        }
+    } else {
+        if (!favorites.watchedShows.find(s => s.imdbID === newId)) {
+            favorites.watchedShows.push(watchedItem);
+        }
+    }
+
+    // Kullanıcı puanını kaydet
+    if (rating > 0) {
+        favorites.userRatings[newId] = rating;
+    }
+
+    // Favorileri kaydet ve yeniden render et
+    saveFavorites();
+    renderFavorites();
+    
+    closeDiaryModal();
+    renderMonthlyEvents();
+    showNotification('İzleme kaydı başarıyla eklendi!', 'success');
+};
+
+// Günlük kayıt düzenleme fonksiyonunu güncelle
+const editDiaryEntry = (id) => {
+    // Ana sayfadaki izlenen listelerinden kaydı bul
+    const movieEntry = favorites.watchedMovies.find(m => m.imdbID === id);
+    const showEntry = favorites.watchedShows.find(s => s.imdbID === id);
+    const entry = movieEntry || showEntry;
+    
+    if (!entry) return;
+
+    // Düzenleme modunu aktif et
+    isEditingDiary = true;
+    currentEditingId = id;
+
+    // Populate form with entry data
+    document.getElementById('diaryTitle').value = entry.Title;
+    document.getElementById('diaryType').value = entry.Type === 'movie' ? 'movie' : 'show';
+    document.getElementById('diaryDate').value = entry.watchedDate || new Date().toISOString().split('T')[0];
+
+    // Set rating hearts
+    const rating = favorites.userRatings[id] || 0;
+    document.querySelectorAll('.hearts i').forEach((heart, index) => {
+        heart.classList.toggle('active', index < rating);
+    });
+    document.querySelector('.rating-text').textContent = 
+        ['Puan seçin', 'Çok kötü', 'Kötü', 'Orta', 'İyi', 'Mükemmel'][rating] || 'Puan seçin';
+
+    openDiaryModal();
+    
+    // Kaydet butonunu güncelleme moduna çevir
+    const saveBtn = document.getElementById('saveDiaryEntry');
+    saveBtn.textContent = 'Güncelle';
+};
+
+// Günlük kayıt güncelleme fonksiyonu
+const updateDiaryEntry = (id) => {
+    const title = document.getElementById('diaryTitle').value.trim();
+    const type = document.getElementById('diaryType').value;
+    const date = document.getElementById('diaryDate').value;
+    const rating = document.querySelectorAll('.hearts i.active').length;
+
+    if (!date) {
+        showNotification('Lütfen izleme tarihini seçin!', 'error');
+        return;
+    }
+
+    // Mevcut kaydı bul
+    const movieIndex = favorites.watchedMovies.findIndex(m => m.imdbID === id);
+    const showIndex = favorites.watchedShows.findIndex(s => s.imdbID === id);
+    
+    if (movieIndex !== -1) {
+        // Mevcut film kaydını güncelle (poster ve diğer bilgileri koru)
+        favorites.watchedMovies[movieIndex].watchedDate = date;
+        favorites.watchedMovies[movieIndex].Year = new Date(date).getFullYear().toString();
+    } else if (showIndex !== -1) {
+        // Mevcut dizi kaydını güncelle (poster ve diğer bilgileri koru)
+        favorites.watchedShows[showIndex].watchedDate = date;
+        favorites.watchedShows[showIndex].Year = new Date(date).getFullYear().toString();
+    }
+
+    // Kullanıcı puanını güncelle
+    if (rating > 0) {
+        favorites.userRatings[id] = rating;
+    } else {
+        // Puan seçilmemişse mevcut puanı koru (silme)
+        // favorites.userRatings[id] zaten mevcut kalır
+    }
+
+    // Favorileri kaydet ve yeniden render et
+    saveFavorites();
+    renderFavorites();
+    
+    // Düzenleme modunu sıfırla
+    isEditingDiary = false;
+    currentEditingId = null;
+    
+    closeDiaryModal();
+    renderMonthlyEvents();
+    showNotification('İzleme kaydı başarıyla güncellendi!', 'success');
+    
+    // Kaydet butonunu normal moda çevir
+    const saveBtn = document.getElementById('saveDiaryEntry');
+    saveBtn.textContent = 'Kaydet';
+};
+
+/* editDiaryEntry function updated above */
+
+const deleteDiaryEntry = (id) => {
+    if (confirm('Bu kaydı silmek istediğinizden emin misiniz?')) {
+        // Ana sayfadaki izlenen listelerinden de kaldır
+        favorites.watchedMovies = favorites.watchedMovies.filter(m => m.imdbID !== id);
+        favorites.watchedShows = favorites.watchedShows.filter(s => s.imdbID !== id);
+        
+        // Kullanıcı puanını da kaldır
+        delete favorites.userRatings[id];
+        
+        // Favorileri kaydet ve yeniden render et
+        saveFavorites();
+        renderFavorites();
+        
+        renderMonthlyEvents();
+        showNotification('Kayıt başarıyla silindi!', 'success');
+    }
+};
+
 // Modal functions
 const openAuthModal = () => {
     document.getElementById('authModal').style.display = 'block';
@@ -257,6 +781,18 @@ const isWatched = (imdbID) => {
         const [r, g, b] = rgb.map(Number);
         const brightness = (r * 299 + g * 587 + b * 114) / 1000;
         return brightness > 128 ? '#000000' : '#FFFFFF';
+    };
+
+    const getDarkerColor = (color, factor = 0.3) => {
+        const rgb = color.match(/\d+/g);
+        if (!rgb) return '#000000';
+        
+        const [r, g, b] = rgb.map(Number);
+        const darkerR = Math.max(0, Math.floor(r * (1 - factor)));
+        const darkerG = Math.max(0, Math.floor(g * (1 - factor)));
+        const darkerB = Math.max(0, Math.floor(b * (1 - factor)));
+        
+        return `rgb(${darkerR}, ${darkerG}, ${darkerB})`;
     };
 
     const applyCardColors = async (element, imageUrl) => {
@@ -728,7 +1264,7 @@ const createFavoriteItem = (item, type) => {
                 <div class="overlay-content">
                     <button class="overlay-menu-item" onclick="removeFromWatchlist('${item.imdbID}', '${type}')">
                         <i class="fa-solid fa-times text-red-500"></i>
-                        <span>Listeden Kaldır</span>
+                        <span>Kaldır</span>
                     </button>
                     <button class="overlay-menu-item" onclick="showDetails('${item.imdbID}')">
                         <i class="fa-solid fa-info-circle text-blue-500"></i>
@@ -790,7 +1326,7 @@ const createFavoriteItem = (item, type) => {
                     </button>
                     <button class="overlay-menu-item" onclick="removeFromWatched('${item.imdbID}', '${type}')">
                         <i class="fa-solid fa-times text-red-500"></i>
-                        <span>Listeden Kaldır</span>
+                        <span>Kaldır</span>
                     </button>
                     <button class="overlay-menu-item" onclick="showDetails('${item.imdbID}')">
                         <i class="fa-solid fa-info-circle text-blue-500"></i>
@@ -1027,6 +1563,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('googleLoginBtn').addEventListener('click', () => handleGoogleAuth(false));
     document.getElementById('googleRegisterBtn').addEventListener('click', () => handleGoogleAuth(true));
     
+    // Calendar button event listener
+    document.getElementById('calendar-btn').addEventListener('click', handleCalendarClick);
+    
+    // Diary modal event listeners
+    document.getElementById('saveDiaryEntry').addEventListener('click', saveDiaryEntry);
+    
+    // Filter buttons event listeners moved to handleCalendarClick
+    
     // Close auth modal when clicking outside
     document.getElementById('authModal').addEventListener('click', (e) => {
         if (e.target.id === 'authModal') {
@@ -1034,12 +1578,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Close calendar modal when clicking outside
+    document.getElementById('calendarModal').addEventListener('click', (e) => {
+        if (e.target.id === 'calendarModal') {
+            closeCalendarModal();
+        }
+    });
+    
+    // Close diary modal when clicking outside
+    document.getElementById('diaryModal').addEventListener('click', (e) => {
+        if (e.target.id === 'diaryModal') {
+            closeDiaryModal();
+        }
+    });
+    
     // Close auth modal with Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const authModal = document.getElementById('authModal');
+            const calendarModal = document.getElementById('calendarModal');
+            const diaryModal = document.getElementById('diaryModal');
             if (authModal.style.display === 'block') {
                 closeAuthModal();
+            } else if (calendarModal.style.display === 'block') {
+                closeCalendarModal();
+            } else if (diaryModal.style.display === 'block') {
+                closeDiaryModal();
             }
         }
     });
@@ -1095,12 +1659,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== ORTAK FONKSİYONLAR =====
-    
-    // Puanlama sistemi
-    const saveUserRating = (imdbID, rating) => {
-        favorites.userRatings[imdbID] = rating;
-        saveFavorites(); // Save to Firebase
-    };
+
+// Puanlama sistemi - Global scope'a taşındı
+window.saveUserRating = (imdbID, rating) => {
+    favorites.userRatings[imdbID] = rating;
+    saveFavorites(); // Save to Firebase
+};
 
 
 
@@ -1426,7 +1990,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('watchedShows', JSON.stringify(favorites.watchedShows));
     };
 
-    const saveFavorites = () => {
+    // Save favorites function - Global scope'a taşındı
+    window.saveFavorites = () => {
         // Save to Firebase only
         saveUserData();
     };
@@ -1616,7 +2181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             /<button([^>]*)onclick="addToWatchlistFromSearch[^>]*>.*?<span>Daha Sonra İzle<\/span>.*?<\/button>/,
                             `<button$1onclick="removeFromWatchlistFromSearch('${item.imdbID}', '${type}')">
                                 <i class="fa-solid fa-times text-red-500"></i>
-                                <span>Listeden Kaldır</span>
+                                <span>Kaldır</span>
                             </button>`
                         );
                     }
@@ -1666,7 +2231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const watchedItem = {
             ...item,
             type: type,
-            watchedAt: new Date().toISOString()
+            watchedAt: new Date().toISOString(),
+            watchedDate: new Date().toISOString()
         };
 
         // Watchlist'ten kaldır (renderFavorites çağırmadan)
@@ -1939,10 +2505,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     
                     // Watchlist'ten kaldırıldığı için "Listeden Kaldır" butonunu "Daha Sonra İzle" olarak değiştir
-                    const removeBtn = newContent.match(/<button[^>]*onclick="removeFromWatchlistFromSearch[^>]*>.*?<span>Listeden Kaldır<\/span>.*?<\/button>/);
+                    const removeBtn = newContent.match(/<button[^>]*onclick="removeFromWatchlistFromSearch[^>]*>.*?<span>Kaldır<\/span>.*?<\/button>/);
                     if (removeBtn) {
                         newContent = newContent.replace(
-                            /<button([^>]*)onclick="removeFromWatchlistFromSearch[^>]*>.*?<span>Listeden Kaldır<\/span>.*?<\/button>/,
+                            /<button([^>]*)onclick="removeFromWatchlistFromSearch[^>]*>.*?<span>Kaldır<\/span>.*?<\/button>/,
                             `<button$1onclick="addToWatchlistFromSearch('${imdbID}', '${item.Title}', '${item.Year}', '${item.Poster}', '${type}')">
                                 <i class="fa-solid fa-clock text-orange-500"></i>
                                 <span>Daha Sonra İzle</span>
@@ -2146,8 +2712,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render
     renderFavorites();
 
-    // Notification system
-    const showNotification = (message, type = 'info', duration = 3000) => {
+    // Notification system - Global scope'a taşındı
+    window.showNotification = (message, type = 'info', duration = 3000) => {
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notification-text');
         const notificationIcon = document.getElementById('notification-icon');
@@ -2194,12 +2760,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const registerBtn = document.getElementById('registerBtn');
                 const googleRegisterBtn = document.getElementById('googleRegisterBtn');
                 const authBtn = document.getElementById('authBtn');
+                const diaryBtn = document.getElementById('diaryBtn');
                 
                 if (loginBtn) loginBtn.onclick = handleEmailLogin;
                 if (googleLoginBtn) googleLoginBtn.onclick = () => handleGoogleAuth(false);
                 if (registerBtn) registerBtn.onclick = handleEmailRegister;
                 if (googleRegisterBtn) googleRegisterBtn.onclick = () => handleGoogleAuth(true);
                 if (authBtn) authBtn.onclick = openAuthModal;
+                if (diaryBtn) diaryBtn.onclick = openDiaryModal;
                 
                 console.log('Auth event listeners added');
             } else {
@@ -2208,3 +2776,96 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     });
 });
+
+// Film Günlüğü Fonksiyonları - Eski versiyon kaldırıldı
+
+const renderDiaryContent = () => {
+    const diaryContent = document.getElementById('diaryContent');
+    
+    // İzlenen film ve dizileri birleştir
+    const allWatched = [
+        ...favorites.watchedMovies.map(item => ({ ...item, type: 'movie' })),
+        ...favorites.watchedShows.map(item => ({ ...item, type: 'show' }))
+    ];
+    
+    // Tarihe göre sırala (en yeni önce)
+    allWatched.sort((a, b) => {
+        const dateA = new Date(a.watchedDate || Date.now());
+        const dateB = new Date(b.watchedDate || Date.now());
+        return dateB - dateA;
+    });
+    
+    if (allWatched.length === 0) {
+        diaryContent.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #888;">
+                <i class="fas fa-calendar-alt" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                <h3>Henüz film günlüğünüz boş</h3>
+                <p>Film izledikçe burada görünecek</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const diaryHTML = allWatched.map(item => {
+        const watchedDate = new Date(item.watchedDate || Date.now());
+        const month = watchedDate.toLocaleDateString('tr-TR', { month: 'long' }).toUpperCase();
+        const day = watchedDate.getDate();
+        const year = watchedDate.getFullYear();
+        
+        // Kullanıcı puanını al
+        const userRating = favorites.userRatings[item.imdbID] || 0;
+        const stars = generateStars(userRating);
+        
+        // İkon belirleme (kalp veya retweet)
+        let icon = '';
+        if (favorites.movies.find(m => m.imdbID === item.imdbID) || 
+            favorites.shows.find(s => s.imdbID === item.imdbID)) {
+            icon = '<i class="fas fa-heart diary-icon heart"></i>';
+        } else if (item.rewatch) {
+            icon = '<i class="fas fa-retweet diary-icon retweet"></i>';
+        }
+        
+        return `
+            <div class="diary-entry">
+                <div class="diary-poster">
+                    <img src="${item.Poster}" alt="${item.Title}" onerror="this.src='https://placehold.co/100x150/1a1a1a/C6C6C6?text=Poster'">
+                </div>
+                <div class="diary-info">
+                    <h3 class="diary-title">${item.Title}</h3>
+                    <p class="diary-year">${item.Year}</p>
+                    <div class="diary-rating">
+                        <div class="diary-stars">
+                            ${stars}
+                        </div>
+                        ${icon}
+                    </div>
+                </div>
+                <div class="diary-date">
+                    <p class="diary-month">${month}</p>
+                    <p class="diary-day">${day}</p>
+                    <p class="diary-year-text">${year}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    diaryContent.innerHTML = diaryHTML;
+};
+
+const generateStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    let starsHTML = '';
+    
+    for (let i = 1; i <= 5; i++) {
+        if (i <= fullStars) {
+            starsHTML += '<i class="fas fa-star diary-star"></i>';
+        } else if (i === fullStars + 1 && hasHalfStar) {
+            starsHTML += '<i class="fas fa-star-half-alt diary-star"></i>';
+        } else {
+            starsHTML += '<i class="far fa-star diary-star empty"></i>';
+        }
+    }
+    
+    return starsHTML;
+};

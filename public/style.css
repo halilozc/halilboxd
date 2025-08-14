@@ -1,7 +1,11 @@
 /* General Body and Font Styles */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #121212;
+    background-image: url('./background.webp');
+    background-size: auto;
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: scroll;
     color: #ffffff;
     margin: 0;
     -webkit-font-smoothing: antialiased;
@@ -33,7 +37,7 @@ body {
     margin: 0 0 20px 0;
     
     /* Metnin arkasından geçen ışık efekti için gradyan */
-    background: linear-gradient(100deg, #1a1a1a 35%, #ffffff 50%, #1a1a1a 65%);
+    background: linear-gradient(100deg, #777777 35%, #ffffff 50%, #777777 65%);
     background-size: 200% 100%;
     
     /* Metni maske olarak kullanma */
@@ -80,7 +84,7 @@ body {
     margin: 0;
     
     /* Metnin arkasından geçen ışık efekti için gradyan - logo ile aynı */
-    background: linear-gradient(100deg, #1a1a1a 35%, #ffffff 50%, #1a1a1a 65%);
+    background: linear-gradient(100deg, #777777 35%, #ffffff 50%, #777777 65%);
     background-size: 200% 100%;
     
     /* Metni maske olarak kullanma */
@@ -374,15 +378,24 @@ body {
     margin-bottom: 30px;
 }
 
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
 .search-box {
     position: relative;
-    max-width: 600px;
-    margin: 0 auto;
+    flex: 1;
     display: flex;
-    align-items: center;;
+    align-items: center;
     border-radius: 35px;
     border: 1px solid #333;
-    padding: 5px;
+    padding: 5px 5px 5px 5px;
+    min-width: 0;
+    overflow: hidden;
 }
 
 #search-input {
@@ -417,11 +430,589 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    margin-right: 5px;
+    flex-shrink: 0;
 }
 
 #search-btn:hover {
     background-color: #3a3a3a;
+}
+
+/* Calendar Button */
+.calendar-button {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid #333;
+    color: #e4e4e4;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-button:active {
+    transform: scale(0.95);
+}
+
+/* Mobile responsive for calendar button */
+@media (max-width: 768px) {
+    .search-container {
+        gap: 10px;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+    
+    .calendar-button {
+        width: 70px;
+        height: 70px;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .search-box {
+        flex: 1;
+        min-width: 0;
+        padding: 5px;
+    }
+    
+    #search-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    #search-input {
+        padding: 15px 20px 15px 50px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Calendar Modal Styles */
+.calendar-modal {
+    max-width: 800px;
+    width: 90%;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.calendar-modal::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.diary-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Calendar events container removed - integrated into main modal body */
+
+/* events-header ve add-entry-btn stilleri kaldırıldı - artık kullanılmıyor */
+
+.diary-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px 0;
+    position: relative;
+}
+
+.filter-btn:hover {
+    opacity: 0.8;
+}
+
+.filter-btn.active {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.filter-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 1px;
+}
+
+/* Calendar events h4 removed - using events-header h4 instead */
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.event-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.event-date {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+}
+
+.event-title {
+    color: #ffffff;
+    font-weight: 500;
+    flex: 1;
+}
+
+.event-type {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Diary Entry Modal Styles */
+.diary-entry-modal {
+    max-width: 600px;
+    width: 90%;
+}
+
+.diary-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.diary-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.diary-form label {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.diary-form input,
+.diary-form select,
+.diary-form textarea {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.diary-form input:focus,
+.diary-form select:focus,
+.diary-form textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.diary-form input::placeholder,
+.diary-form textarea::placeholder {
+    color: #999;
+}
+
+.rating-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stars {
+    display: flex;
+    gap: 4px;
+}
+
+.stars i {
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.stars i:hover,
+.stars i.active {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.hearts {
+    display: flex;
+    gap: 4px;
+}
+
+.hearts i {
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+}
+
+.hearts i:hover,
+.hearts i.active {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.rating-text {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced Diary List Styles - Letterboxd Style */
+
+/* Ay başlıkları */
+.month-header {
+    margin: 24px 0 16px 0;
+    padding: 12px 0;
+    border-bottom: 2px solid rgba(75, 85, 99, 0.2);
+}
+
+.month-header:first-child {
+    margin-top: 0;
+}
+
+.month-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.month-title i {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.diary-list .event-item {
+    position: relative;
+    padding: 16px;
+    background: #C6C6C6; /* Varsayılan renk, dominant renk ile değiştirilecek */
+    border-radius: 16px;
+    border: 3px solid #A0A0A0; /* Varsayılan kenarlık, dominant renk ile değiştirilecek */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.diary-list .event-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.diary-list .event-item .event-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.diary-list .event-item .event-poster {
+    flex-shrink: 0;
+    width: 96px;
+    height: auto;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.diary-list .event-item .event-poster img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.diary-list .event-item .event-poster i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: #1a1a1a;
+}
+
+.diary-list .event-item .event-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.diary-list .event-item .event-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #1f2937;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.diary-list .event-item .event-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1rem;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.diary-list .event-item .event-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 1.2rem;
+}
+
+.diary-list .event-item .event-rating i {
+    color: #ef4444;
+    transition: all 0.2s ease;
+    -webkit-text-stroke: 2px #000000;
+    text-stroke: 2px #000000;
+}
+
+.diary-list .event-item .event-rating i.fa-solid {
+    color: #ef4444;
+    -webkit-text-stroke: 1px #000000;
+    text-stroke: 2px #000000;
+}
+
+.diary-list .event-item .event-rating i.fa-regular {
+    color: #ef4444;
+    opacity: 0.5;
+    -webkit-text-stroke: 1px #000000;
+    text-stroke: 2px #000000;
+}
+
+.diary-list .event-item .event-review {
+    margin-top: 8px;
+    padding: 12px 16px;
+    background: rgba(31, 41, 55, 0.05);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #4b5563;
+    font-style: italic;
+    border-left: 3px solid #ef4444;
+}
+
+.diary-list .event-item .event-date-block {
+    flex-shrink: 0;
+    text-align: center;
+    border-left: 2px solid rgba(75, 85, 99, 0.4);
+    padding-left: 24px;
+    margin-left: 24px;
+    width: 128px;
+}
+
+.diary-list .event-item .event-month {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #4b5563;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.diary-list .event-item .event-day {
+    font-size: 3.75rem;
+    font-weight: 900;
+    color: #1f2937;
+    line-height: 1;
+    margin: 0;
+}
+
+.diary-list .event-item .event-year {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4b5563;
+    margin: 0;
+}
+
+/* Action buttons removed - cards are now clickable for editing */
+
+/* Mobile responsive for calendar */
+@media (max-width: 768px) {
+    .calendar-modal {
+        width: 95%;
+        margin: 10px auto;
+    }
+    
+    .calendar-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .calendar-day {
+        font-size: 0.8rem;
+    }
+    
+    .calendar-weekdays div {
+        font-size: 0.8rem;
+    }
+    
+    .event-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .event-date {
+        align-self: flex-start;
+    }
+    
+    /* Diary list mobile responsive */
+    .diary-list .event-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 12px;
+    }
+    
+    .diary-list .event-item .event-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+    }
+    
+    .diary-list .event-item .event-poster {
+        width: 64px;
+        flex-shrink: 0;
+    }
+    
+    .diary-list .event-item .event-details {
+        gap: 6px;
+    }
+    
+    .diary-list .event-item .event-title {
+        font-size: 1.1rem;
+        line-height: 1.2;
+    }
+    
+    .diary-list .event-item .event-meta {
+        gap: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .diary-list .event-item .event-rating {
+        font-size: 1rem;
+    }
+    
+    .diary-list .event-item .event-date-block {
+        width: 80px;
+        border-left: 2px solid rgba(75, 85, 99, 0.4);
+        padding-left: 16px;
+        margin-left: 16px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    
+    .diary-list .event-item .event-month {
+        font-size: 0.75rem;
+    }
+    
+    .diary-list .event-item .event-day {
+        font-size: 2.5rem;
+    }
+    
+    .diary-list .event-item .event-year {
+        font-size: 0.875rem;
+    }
+    
+    /* Action buttons removed in mobile too */
 }
 
 /* Favorites Sections */
