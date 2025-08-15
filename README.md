@@ -39,7 +39,7 @@ halilboxd, film ve dizi arama, favori listesi oluşturma ve izleme geçmişi tak
 
 1. **Projeyi klonlayın**
 ```bash
-git clone https://github.com/kullaniciadi/halilboxd.git
+git clone https://github.com/halilozc/halilboxd.git
 cd halilboxd
 ```
 
@@ -186,12 +186,9 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## 🔄 Güncellemeler
 
-### v1.0.0
-- İlk sürüm
+### v1.0.1
+- Takvim özelliği eklendi
 - Temel film/dizi arama özelliği
 - Firebase kimlik doğrulaması
 - Favori listesi yönetimi
 
----
-
-**halilboxd** ile film ve dizi dünyasını keşfedin! 🎬✨ 
