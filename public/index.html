@@ -143,6 +143,9 @@
                     <button id="calendar-btn" class="calendar-button" title="Takvim">
                         <i class="fas fa-calendar-alt"></i>
                     </button>
+                    <button id="cube-btn" class="calendar-button" title="3D Cube">
+                        <i class="fas fa-cube"></i>
+                    </button>
                 </div>
             </div>
             
@@ -155,81 +158,131 @@
                 </div>
             </div>
             
-            <!-- Daha Sonra İzle Filmler Section -->
-            <div class="favorites-section" id="watchlist-movies-section">
-                <h2 class="favorites-title">
-                    Daha Sonra İzle - Filmler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('watchlist-movies')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="watchlist-movies" class="favorites-grid">
-                    <!-- Daha sonra izle filmler buraya gelecek -->
+            <!-- Room Section -->
+            <div class="room-section" id="room-section" style="display: none;">
+                <div class="room-container">
+                    <div class="room-content">
+                        <button id="close-room-btn" class="close-room-btn" title="Kapat">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="container-full">
+                            <img class="backgroundImage" src="https://drive.google.com/thumbnail?id=1_ZMV_LcmUXLsRokuz6WXGyN9zVCGfAHp&sz=w1920">
+                            <img class="boyImage" src="https://drive.google.com/thumbnail?id=1eGqJskQQgBJ67myGekmo4YfIVI3lfDTm&sz=w1920">
+                            <div class="cube">
+                                <div class="face top"></div>
+                                <div class="face bottom"></div>
+                                <div class="face left text"></div>
+                                <div class="face right text"></div>
+                                <div class="face front"></div>
+                                <div class="face back text"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Daha Sonra İzle Diziler Section -->
-            <div class="favorites-section" id="watchlist-shows-section">
-                <h2 class="favorites-title">
-                    Daha Sonra İzle - Diziler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('watchlist-shows')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="watchlist-shows" class="favorites-grid">
-                    <!-- Daha sonra izle diziler buraya gelecek -->
+            <!-- FİLMLER Ana Kategori -->
+            <div class="main-category">
+                <h1 class="main-category-title">
+                    FİLMLER
+                </h1>
+                
+                <!-- Daha Sonra İzle - Filmler Section -->
+                <div class="favorites-section" id="watchlist-movies-section">
+                    <h2 class="favorites-title">
+                        bi ara izlersin
+                        <button class="layout-toggle rotated" onclick="toggleLayout('watchlist-movies')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="watchlist-movies" class="favorites-grid">
+                        <!-- Daha sonra izle filmler buraya gelecek -->
+                    </div>
+                </div>
+                
+                <!-- İzlendi Filmler Section -->
+                <div class="favorites-section" id="watched-movies-section">
+                    <h2 class="favorites-title">
+                        izlediğin filmler
+                        <button class="layout-toggle rotated" onclick="toggleLayout('watched-movies')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="watched-movies" class="favorites-grid">
+                        <!-- İzlendi filmler buraya gelecek -->
+                    </div>
+                </div>
+                
+                <!-- Favori Filmler Section -->
+                <div class="favorites-section" id="favorite-movies-section">
+                    <h2 class="favorites-title">
+                        En sevdiğin filmler
+                        <button class="layout-toggle rotated" onclick="toggleLayout('favorite-movies')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="favorite-movies" class="favorites-grid">
+                        <!-- Favori filmler buraya gelecek -->
+                    </div>
                 </div>
             </div>
             
-            <!-- İzlendi Filmler Section -->
-            <div class="favorites-section" id="watched-movies-section">
-                <h2 class="favorites-title">
-                    İzlendi - Filmler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('watched-movies')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="watched-movies" class="favorites-grid">
-                    <!-- İzlendi filmler buraya gelecek -->
+            <!-- DİZİLER Ana Kategori -->
+            <div class="main-category">
+                <h1 class="main-category-title">
+                    DİZİLER
+                </h1>
+                
+                <!-- Devam Et - Diziler Section -->
+                <div class="favorites-section" id="continuing-shows-section">
+                    <h2 class="favorites-title">
+                        İzlemeye devam et
+                        <button class="layout-toggle rotated" onclick="toggleLayout('continuing-shows')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="continuing-shows" class="favorites-grid">
+                        <!-- Devam eden diziler buraya gelecek -->
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Favori Filmler Section -->
-            <div class="favorites-section" id="favorite-movies-section">
-                <h2 class="favorites-title">
-                    Favori Filmler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('favorite-movies')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="favorite-movies" class="favorites-grid">
-                    <!-- Favori filmler buraya gelecek -->
+                
+                <!-- Daha Sonra İzle - Diziler Section -->
+                <div class="favorites-section" id="watchlist-shows-section">
+                    <h2 class="favorites-title">
+                        Bi ara izlersin
+                        <button class="layout-toggle rotated" onclick="toggleLayout('watchlist-shows')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="watchlist-shows" class="favorites-grid">
+                        <!-- Daha sonra izle diziler buraya gelecek -->
+                    </div>
                 </div>
-            </div>
-            
-            <!-- İzlendi Diziler Section -->
-            <div class="favorites-section" id="watched-shows-section">
-                <h2 class="favorites-title">
-                    İzlendi - Diziler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('watched-shows')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="watched-shows" class="favorites-grid">
-                    <!-- İzlendi diziler buraya gelecek -->
+                
+                <!-- İzlendi Diziler Section -->
+                <div class="favorites-section" id="watched-shows-section">
+                    <h2 class="favorites-title">
+                        İzlediğin diziler
+                        <button class="layout-toggle rotated" onclick="toggleLayout('watched-shows')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="watched-shows" class="favorites-grid">
+                        <!-- İzlendi diziler buraya gelecek -->
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Favori Diziler Section -->
-            <div class="favorites-section" id="favorite-shows-section">
-                <h2 class="favorites-title">
-                    Favori Diziler
-                    <button class="layout-toggle rotated" onclick="toggleLayout('favorite-shows')">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                </h2>
-                <div id="favorite-shows" class="favorites-grid">
-                    <!-- Favori diziler buraya gelecek -->
+                
+                <!-- Favori Diziler Section -->
+                <div class="favorites-section" id="favorite-shows-section">
+                    <h2 class="favorites-title">
+                        En sevdiğin diziler
+                        <button class="layout-toggle rotated" onclick="toggleLayout('favorite-shows')">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    </h2>
+                    <div id="favorite-shows" class="favorites-grid">
+                        <!-- Favori diziler buraya gelecek -->
+                    </div>
                 </div>
             </div>
             
@@ -268,33 +321,53 @@
                     <img id="modalPoster" src="" alt="Poster">
                 </div>
                 <div class="modal-info">
-                    <div class="info-row">
-                        <span class="info-label">Yıl:</span>
-                        <span id="modalYear"></span>
+                    <!-- Tab Navigation -->
+                    <div class="modal-tabs" id="modalTabs" style="display: none;">
+                        <button class="tab-btn active" data-tab="info">Genel Bilgiler</button>
+                        <button class="tab-btn" data-tab="seasons">Sezonlar & Bölümler</button>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Tür:</span>
-                        <span id="modalGenre"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Süre:</span>
-                        <span id="modalRuntime"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Yönetmen:</span>
-                        <span id="modalDirector"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Oyuncular:</span>
-                        <span id="modalActors"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Puan:</span>
-                        <span id="modalRating"></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Özet:</span>
-                        <p id="modalPlot"></p>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+                        <!-- Genel Bilgiler Tab -->
+                        <div class="tab-pane active" id="infoTab">
+                            <div class="info-row">
+                                <span class="info-label">Yıl:</span>
+                                <span id="modalYear"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Tür:</span>
+                                <span id="modalGenre"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Süre:</span>
+                                <span id="modalRuntime"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Yönetmen:</span>
+                                <span id="modalDirector"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Oyuncular:</span>
+                                <span id="modalActors"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Puan:</span>
+                                <span id="modalRating"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Özet:</span>
+                                <p id="modalPlot"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Sezonlar Tab -->
+                        <div class="tab-pane" id="seasonsTab">
+                            <div id="modalSeasons">
+                                <div id="seasonSelector" style="margin-bottom: 10px;"></div>
+                                <div id="episodesList"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -42,6 +42,24 @@ app.get('/api/details', async (req, res) => {
     }
 });
 
+app.get('/api/seasons', async (req, res) => {
+    const imdbID = req.query.imdbID;
+    const season = req.query.season || 1;
+    
+    if (!imdbID) {
+        return res.status(400).json({ error: 'imdbID parameter is required' });
+    }
+
+    try {
+        const response = await fetch(`http://www.omdbapi.com/?i=${imdbID}&Season=${season}&apikey=${OMDB_API_KEY}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching season data from OMDb:', error);
+        res.status(500).json({ error: 'Failed to fetch season data from OMDb' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

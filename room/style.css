@@ -1,0 +1,168 @@
+body {
+	width: 100vw;
+	height: 100vh;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: black;
+	overflow: hidden;
+}
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.content {
+	width: 1000px;
+	height: 562px;
+	border-radius: 40px;
+}
+
+.container-full {
+	width: 1000px;
+	height: 562px;
+	margin: 0;
+	justify-content: center;
+	transform: scale(1);
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+.backgroundImage {
+	position: absolute;
+	width: 1000px;
+}
+.boyImage {
+	position: absolute;
+	width: 1000px;
+	z-index: 2;
+	filter: blur(1.5px);
+	/* Static blur for better performance than animation */
+}
+
+.cube,
+.face {
+	width: 870px;
+	height: 190px;
+}
+.cube {
+	position: relative;
+	transform-style: preserve-3d;
+	perspective: 480px;
+	transform-style: preserve-3d;
+	perspective-origin: 51% 70%;
+}
+.face {
+	position: absolute;
+}
+.face {
+	background: 0 0;
+	border: 0 solid #000;
+	opacity: 0.5;
+}
+.bottom,
+.top {
+	width: 870px;
+	height: 870px;
+}
+
+
+/* Styles for image gallery */
+.text {
+	white-space: nowrap;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+}
+
+.image-container {
+	display: flex;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.text img {
+	flex-shrink: 0;
+	filter: brightness(0.8) contrast(1.1);
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	backface-visibility: hidden;
+	transform: translateZ(0);
+	will-change: opacity, filter;
+}
+
+.text img:hover {
+	filter: brightness(1) contrast(1.2);
+	border-color: rgba(255, 255, 255, 0.3);
+}
+.front {
+	transform: translateZ(435px);
+	display: none;
+}
+.back {
+	transform: translateZ(-435px) rotateY(180deg) scaleX(-1);
+}
+.left {
+	transform: translateX(-435px) rotateY(-90deg) scaleX(-1);
+}
+.right {
+	transform: translateX(435px) rotateY(90deg) scaleX(-1);
+}
+.top {
+	transform: translateY(-435px) rotateX(90deg) scaleY(-1);
+}
+.bottom {
+	transform: translateY(-245px) rotateX(-90deg) scaleY(-1);
+}
+
+
+/* Animation for film posters - apply to image container */
+.left .image-container {
+	margin-left: 480px;
+	animation: 300s linear infinite leftImages;
+	will-change: transform;
+	transform: translateZ(0);
+}
+.back .image-container {
+	margin-left: -390px;
+	animation: 300s linear infinite backImages;
+	will-change: transform;
+	transform: translateZ(0);
+}
+.right .image-container {
+	margin-left: -1260px;
+	animation: 300s linear infinite rightImages;
+	will-change: transform;
+	transform: translateZ(0);
+}
+
+/* Optimized keyframes for smooth animation */
+@keyframes leftImages {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-80000px);
+	}
+}
+@keyframes backImages {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-80000px);
+	}
+}
+@keyframes rightImages {
+	0% {
+		transform: translateX(0);
+	}
+	100% {
+		transform: translateX(-80000px);
+	}
+}
+ 
