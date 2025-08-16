@@ -160,8 +160,6 @@ const handleCubeClick = () => {
         favoritesSections.forEach(section => {
             section.style.display = 'block';
         });
-        
-        showNotification('Ana sayfaya dönüldü! 🏠', 'info', 2000);
     }
     
     console.log('3D Cube button clicked!');
@@ -276,6 +274,18 @@ const unlockOrientation = () => {
 // Calendar modal functions
 const openCalendarModal = async () => {
     document.getElementById('calendarModal').style.display = 'block';
+    
+    // Yükleniyor işareti göster
+    const eventsContainer = document.getElementById('monthlyEvents');
+    eventsContainer.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; padding: 40px; color: #ffffff;">
+            <div style="text-align: center;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px; color: #667eea;"></i>
+                <p style="margin: 0; font-size: 1rem;">Takvim yükleniyor...</p>
+            </div>
+        </div>
+    `;
+    
     await renderMonthlyEvents();
 };
 
@@ -714,102 +724,140 @@ const renderFilteredEvents = async (events) => {
         `;
         eventsContainer.appendChild(monthHeader);
         
-        // Bu ayın eventlerini ekle
-        for (const event of monthData.events) {
-            const eventElement = document.createElement('div');
-            eventElement.className = 'event-item';
-            
-            const typeText = event.type === 'movie' ? 'Film' : 'Dizi';
-            const typeIcon = event.type === 'movie' ? 'fas fa-film' : 'fas fa-tv';
-            
-            // Poster varsa göster, yoksa ikon göster
-            const posterContent = event.poster && event.poster !== 'N/A' ? 
-                `<img src="${event.poster}" alt="${event.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` :
-                '';
-            
-            // Tarih bilgilerini hazırla
+        // Bu ayın eventlerini günlere göre grupla
+        const eventsByDay = {};
+        monthData.events.forEach(event => {
             const eventDate = new Date(event.date);
-            const month = eventDate.toLocaleDateString('tr-TR', { month: 'long' }).toUpperCase();
-            const day = eventDate.getDate();
-            const year = eventDate.getFullYear();
+            const dayKey = eventDate.toDateString();
             
-            // Kalp ikonları için rating - Font Awesome kalpleri kullan
-            const heartRating = event.rating > 0 ? 
-                '<i class="fa-solid fa-heart text-red-500"></i>'.repeat(event.rating) + 
-                '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5 - event.rating) :
-                '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5);
+            if (!eventsByDay[dayKey]) {
+                eventsByDay[dayKey] = [];
+            }
+            eventsByDay[dayKey].push(event);
+        });
+        
+        // Günleri tarihe göre sırala (en yeni önce)
+        const sortedDays = Object.keys(eventsByDay).sort((a, b) => new Date(b) - new Date(a));
+        
+        // Her gün için kartları oluştur
+        for (const dayKey of sortedDays) {
+            const dayEvents = eventsByDay[dayKey];
             
-            eventElement.innerHTML = `
-                <div class="event-content" data-type="${event.type}">
-                    <div class="event-poster">
-                        ${posterContent}
-                        <i class="${typeIcon}" style="${event.poster && event.poster !== 'N/A' ? 'display: none;' : 'display: flex;'}"></i>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-title">${event.title}</div>
-                        <div class="event-meta">
-                            ${event.type === 'show' && event.season && event.episode ? 
-                                `<span>Sezon ${event.season} • Bölüm ${event.episode}</span>` : 
-                                `<span>${event.year || year}</span>`
-                            }
-                        </div>
-                        <div class="event-rating">
-                            ${heartRating}
-                        </div>
-                        ${event.review ? `<div class="event-review">"${event.review}"</div>` : ''}
-                    </div>
-                </div>
-                <div class="event-date-block">
-                    <p class="event-month">${month}</p>
-                    <p class="event-day">${day}</p>
-                    <p class="event-year">${year}</p>
-                </div>
-            `;
-            
-            // Kartın tıklanabilir olması için event listener ekle
-            eventElement.style.cursor = 'pointer';
-            eventElement.addEventListener('click', (e) => {
-                // Eğer tıklanan element action butonu değilse düzenleme modalını aç
-                if (!e.target.closest('.action-btn')) {
-                    editDiaryEntry(event.id);
+            // Aynı gün içinde aynı dizi varsa grupla
+            const groupedEvents = {};
+            dayEvents.forEach(event => {
+                if (event.type === 'show') {
+                    const showKey = `${event.title}-${event.season}`;
+                    if (!groupedEvents[showKey]) {
+                        groupedEvents[showKey] = {
+                            ...event,
+                            episodes: []
+                        };
+                    }
+                    groupedEvents[showKey].episodes.push({
+                        episode: event.episode,
+                        rating: event.rating,
+                        review: event.review
+                    });
+                } else {
+                    // Filmler için ayrı key oluştur
+                    const movieKey = `movie-${event.id}`;
+                    groupedEvents[movieKey] = event;
                 }
             });
             
-            // DOM'a ekle
-            eventsContainer.appendChild(eventElement);
-            
-            // Dominant renk uygula (eğer poster varsa)
-            if (event.poster && event.poster !== 'N/A' && event.poster !== './yok.PNG') {
-                try {
-                    const dominantColor = await getDominantColor(event.poster);
-                    const textColor = getContrastColor(dominantColor);
-                    
-                    // Koyu kenarlık rengi oluştur (dominant rengin %30 daha koyu versiyonu)
-                    const darkerColor = getDarkerColor(dominantColor, 0.3);
-                    
-                    // Kart arka planını ayarla
-                    eventElement.style.backgroundColor = dominantColor;
-                    
-                    // Kenarlık rengini ayarla
-                    eventElement.style.borderColor = darkerColor;
-                    
-                    // Metin renklerini ayarla
-                    const title = eventElement.querySelector('.event-title');
-                    const meta = eventElement.querySelector('.event-meta');
-                    const monthText = eventElement.querySelector('.event-month');
-                    const dayText = eventElement.querySelector('.event-day');
-                    const yearText = eventElement.querySelector('.event-year');
-                    
-                    if (title) title.style.color = textColor;
-                    if (meta) meta.style.color = textColor;
-                    if (monthText) monthText.style.color = textColor;
-                    if (dayText) dayText.style.color = textColor;
-                    if (yearText) yearText.style.color = textColor;
-                    
-                } catch (error) {
-                    console.error('Takvim kartı renk uygulama hatası:', error);
+            // Her grup için kart oluştur
+            Object.values(groupedEvents).forEach(groupEvent => {
+                const eventElement = document.createElement('div');
+                eventElement.className = 'event-item';
+                
+                const typeText = groupEvent.type === 'movie' ? 'Film' : 'Dizi';
+                const typeIcon = groupEvent.type === 'movie' ? 'fas fa-film' : 'fas fa-tv';
+                
+                // Poster varsa göster, yoksa ikon göster
+                const posterContent = groupEvent.poster && groupEvent.poster !== 'N/A' ? 
+                    `<img src="${groupEvent.poster}" alt="${groupEvent.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` :
+                    '';
+                
+                // Tarih bilgilerini hazırla
+                const eventDate = new Date(groupEvent.date);
+                const month = eventDate.toLocaleDateString('tr-TR', { month: 'long' }).toUpperCase();
+                const day = eventDate.getDate();
+                const year = eventDate.getFullYear();
+                
+                // Dizi için bölüm bilgilerini hazırla
+                let episodeInfo = '';
+                if (groupEvent.type === 'show' && groupEvent.episodes && groupEvent.episodes.length > 1) {
+                    const episodeNumbers = groupEvent.episodes.map(ep => ep.episode).sort((a, b) => a - b);
+                    episodeInfo = `<span>Sezon ${groupEvent.season} • Bölüm ${episodeNumbers.join(', ')}</span>`;
+                } else if (groupEvent.type === 'show' && groupEvent.season && groupEvent.episode) {
+                    episodeInfo = `<span>Sezon ${groupEvent.season} • Bölüm ${groupEvent.episode}</span>`;
+                } else {
+                    episodeInfo = `<span>${groupEvent.year || year}</span>`;
                 }
-            }
+                
+                // Ortalama rating hesapla (dizi için)
+                let averageRating = 0;
+                if (groupEvent.type === 'show' && groupEvent.episodes && groupEvent.episodes.length > 1) {
+                    const totalRating = groupEvent.episodes.reduce((sum, ep) => sum + (ep.rating || 0), 0);
+                    averageRating = Math.round(totalRating / groupEvent.episodes.length);
+                } else {
+                    averageRating = groupEvent.rating || 0;
+                }
+                
+                // Kalp ikonları için rating
+                const heartRating = averageRating > 0 ? 
+                    '<i class="fa-solid fa-heart text-red-500"></i>'.repeat(averageRating) + 
+                    '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5 - averageRating) :
+                    '<i class="fa-regular fa-heart text-red-500"></i>'.repeat(5);
+                
+                // Review bilgilerini birleştir (dizi için)
+                let combinedReview = '';
+                if (groupEvent.type === 'show' && groupEvent.episodes && groupEvent.episodes.length > 1) {
+                    const reviews = groupEvent.episodes.filter(ep => ep.review).map(ep => ep.review);
+                    if (reviews.length > 0) {
+                        combinedReview = `<div class="event-review">"${reviews.join(' | ')}"</div>`;
+                    }
+                } else if (groupEvent.review) {
+                    combinedReview = `<div class="event-review">"${groupEvent.review}"</div>`;
+                }
+                
+                eventElement.innerHTML = `
+                    <div class="event-content" data-type="${groupEvent.type}">
+                        <div class="event-poster">
+                            ${posterContent}
+                            <i class="${typeIcon}" style="${groupEvent.poster && groupEvent.poster !== 'N/A' ? 'display: none;' : 'display: flex;'}"></i>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-title">${groupEvent.title}</div>
+                            <div class="event-meta">
+                                ${episodeInfo}
+                            </div>
+                            <div class="event-rating">
+                                ${heartRating}
+                            </div>
+                            ${combinedReview}
+                        </div>
+                    </div>
+                    <div class="event-date-block">
+                        <p class="event-month">${month}</p>
+                        <p class="event-day">${day}</p>
+                        <p class="event-year">${year}</p>
+                    </div>
+                `;
+                
+                // Kartın tıklanabilir olması için event listener ekle
+                eventElement.style.cursor = 'pointer';
+                eventElement.addEventListener('click', (e) => {
+                    // Eğer tıklanan element action butonu değilse düzenleme modalını aç
+                    if (!e.target.closest('.action-btn')) {
+                        editDiaryEntry(groupEvent.id);
+                    }
+                });
+                
+                // DOM'a ekle
+                eventsContainer.appendChild(eventElement);
+            });
         }
     }
 };
@@ -3164,6 +3212,11 @@ window.saveFavorites = () => {
     };
 
     const removeFromFavorites = (imdbID, type) => {
+        // Onay mesajı göster
+        if (!confirm('Bu öğeyi favorilerden kaldırmak istediğinizden emin misiniz?')) {
+            return;
+        }
+        
         let removedItem = null;
         
         if (type === 'movie') {
@@ -3277,6 +3330,11 @@ window.saveFavorites = () => {
     };
 
     const removeFromWatchlist = (imdbID, type) => {
+        // Onay mesajı göster
+        if (!confirm('Bu öğeyi izleme listesinden kaldırmak istediğinizden emin misiniz?')) {
+            return;
+        }
+        
         let removedItem = null;
         
         if (type === 'movie') {
@@ -3396,6 +3454,11 @@ window.saveFavorites = () => {
     };
 
     const removeFromWatched = (imdbID, type) => {
+        // Onay mesajı göster
+        if (!confirm('Bu öğeyi izlendi listesinden kaldırmak istediğinizden emin misiniz?')) {
+            return;
+        }
+        
         let removedItem = null;
         
         if (type === 'movie') {
@@ -3528,6 +3591,11 @@ window.saveFavorites = () => {
             section.style.display = 'none';
         });
         
+        // Hide main category containers
+        document.querySelectorAll('.main-category').forEach(category => {
+            category.style.display = 'none';
+        });
+        
         content.innerHTML = '<p class="info-message">Aranıyor...</p>';
         const results = await fetchData(`/api/search?query=${encodeURIComponent(query)}`);
         await renderSearchItems(results);
@@ -3545,6 +3613,11 @@ window.saveFavorites = () => {
         
         document.querySelectorAll('.favorites-section').forEach(section => {
             section.style.display = 'block';
+        });
+        
+        // Show main category containers
+        document.querySelectorAll('.main-category').forEach(category => {
+            category.style.display = 'block';
         });
     };
 
@@ -3824,8 +3897,6 @@ window.saveFavorites = () => {
                 section.style.display = 'block';
             });
         }
-        
-        showNotification('Ana sayfaya dönüldü!', 'info', 2000);
     });
 
     // Menü açma/kapama fonksiyonları

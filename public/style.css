@@ -1,6 +1,70 @@
+/* Outfit Font Face Declarations */
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./outfit font/Outfit-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
 /* General Body and Font Styles */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: #ffffff;
     margin: 0;
     -webkit-font-smoothing: antialiased;
@@ -109,7 +173,8 @@ body::before {
 
 .main-content {
     flex: 1;
-    padding: 40px;
+    padding: 2px;
+    padding-top: 20px;
     width: 100%;
     max-width: 1600px;
     margin: 0 auto;
@@ -584,11 +649,17 @@ body::before {
 
 /* Calendar Modal Styles */
 .calendar-modal {
-    max-width: 800px;
-    width: 90%;
+    max-width: 100vw;
+    width: 100vw;
+    height: 100vh;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* Internet Explorer 10+ */
+    background: linear-gradient(135deg, #0f0f0f 0%, #0f0f0f 100%);
+    border: none;
+    backdrop-filter: blur(20px);
+    margin: 0;
+    border-radius: 0;
 }
 
 .calendar-modal::-webkit-scrollbar {
@@ -598,10 +669,11 @@ body::before {
 .diary-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
     align-items: center;
     max-width: 800px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
 /* Calendar events container removed - integrated into main modal body */
@@ -614,6 +686,7 @@ body::before {
     margin-bottom: 20px;
     width: 100%;
     justify-content: center;
+    padding: 0 16px;
 }
 
 .filter-btn {
@@ -654,7 +727,7 @@ body::before {
 .events-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0;
     width: 100%;
 }
 
@@ -840,46 +913,63 @@ body::before {
 
 /* Ay başlıkları */
 .month-header {
-    margin: 24px 0 16px 0;
-    padding: 12px 0;
-    border-bottom: 2px solid rgba(75, 85, 99, 0.2);
+    margin: 40px 0 20px 0;
+    padding: 0 0 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
 }
 
 .month-header:first-child {
     margin-top: 0;
 }
 
+.month-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #00C030, #00E676);
+    border-radius: 1px;
+}
+
 .month-title {
-    font-size: 1.4rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #9ca3af;
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding-bottom: 0;
 }
 
 .month-title i {
-    color: #ffffff;
-    font-size: 1.2rem;
+    color: #00C030;
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 .diary-list .event-item {
     position: relative;
-    padding: 16px;
-    background: #C6C6C6; /* Varsayılan renk, dominant renk ile değiştirilecek */
-    border-radius: 16px;
-    border: 3px solid #A0A0A0; /* Varsayılan kenarlık, dominant renk ile değiştirilecek */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 16px 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     display: flex;
     align-items: center;
     gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    margin-bottom: 0;
 }
 
 .diary-list .event-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .diary-list .event-item .event-content {
@@ -891,16 +981,18 @@ body::before {
 
 .diary-list .event-item .event-poster {
     flex-shrink: 0;
-    width: 96px;
-    height: auto;
+    width: 52px;
+    height: 78px;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .diary-list .event-item .event-poster img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
 }
 
@@ -909,103 +1001,117 @@ body::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2rem;
-    color: #1a1a1a;
+    font-size: 1.4rem;
+    color: #6b7280;
+    opacity: 0.6;
 }
 
 .diary-list .event-item .event-details {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    min-width: 0;
 }
 
 .diary-list .event-item .event-title {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #1f2937;
-    line-height: 1.2;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.3;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .diary-list .event-item .event-meta {
     display: flex;
     align-items: center;
-    gap: 16px;
-    font-size: 1rem;
-    color: #4b5563;
-    font-weight: 500;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    font-weight: 400;
 }
 
 .diary-list .event-item .event-rating {
     display: flex;
     align-items: center;
     gap: 2px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    margin-top: 6px;
 }
 
 .diary-list .event-item .event-rating i {
     color: #ef4444;
-    transition: all 0.2s ease;
-    -webkit-text-stroke: 2px #000000;
-    text-stroke: 2px #000000;
+    -webkit-text-stroke: 1px #000000;
+    text-stroke: 1px #000000;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
 .diary-list .event-item .event-rating i.fa-solid {
     color: #ef4444;
     -webkit-text-stroke: 1px #000000;
-    text-stroke: 2px #000000;
+    text-stroke: 1px #000000;
 }
 
 .diary-list .event-item .event-rating i.fa-regular {
-    color: #ef4444;
-    opacity: 0.5;
-    -webkit-text-stroke: 1px #000000;
-    text-stroke: 2px #000000;
+    color: transparent;
+    opacity: 1;
+    -webkit-text-stroke: 0.3px #ffffff;
+    text-stroke: 0.3px #ffffff;
 }
 
 .diary-list .event-item .event-review {
-    margin-top: 8px;
-    padding: 12px 16px;
-    background: rgba(31, 41, 55, 0.05);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #4b5563;
+    margin-top: 6px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #d1d5db;
     font-style: italic;
-    border-left: 3px solid #ef4444;
+    border-left: 3px solid #00C030;
+    line-height: 1.4;
+    backdrop-filter: blur(10px);
 }
 
 .diary-list .event-item .event-date-block {
     flex-shrink: 0;
     text-align: center;
-    border-left: 2px solid rgba(75, 85, 99, 0.4);
-    padding-left: 24px;
-    margin-left: 24px;
-    width: 128px;
+    border: none;
+    padding: 12px 16px;
+    margin: 0 20px 0 0;
+    width: 80px;
+    min-width: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
 }
 
 .diary-list .event-item .event-month {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #4b5563;
-    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     margin: 0;
+    line-height: 1;
 }
 
 .diary-list .event-item .event-day {
-    font-size: 3.75rem;
-    font-weight: 900;
-    color: #1f2937;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
     line-height: 1;
-    margin: 0;
+    margin: 2px 0 0 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .diary-list .event-item .event-year {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #4b5563;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #9ca3af;
     margin: 0;
+    line-height: 1;
 }
 
 /* Action buttons removed - cards are now clickable for editing */
@@ -1013,8 +1119,15 @@ body::before {
 /* Mobile responsive for calendar */
 @media (max-width: 768px) {
     .calendar-modal {
-        width: 95%;
-        margin: 10px auto;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #0f0f0f 0%, #0f0f0f 100%);
+    }
+    
+    .diary-container {
+        max-width: 100%;
+        padding: 0 5px;
     }
     
     .calendar-header h3 {
@@ -1044,59 +1157,64 @@ body::before {
         flex-direction: row;
         align-items: center;
         gap: 12px;
-        padding: 12px;
-        border-radius: 12px;
+        padding: 12px 5px;
+        border-radius: 0;
     }
     
     .diary-list .event-item .event-content {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         flex: 1;
     }
     
     .diary-list .event-item .event-poster {
-        width: 64px;
+        width: 44px;
+        height: 66px;
         flex-shrink: 0;
+        border-radius: 6px;
     }
     
     .diary-list .event-item .event-details {
-        gap: 6px;
+        gap: 4px;
     }
     
     .diary-list .event-item .event-title {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         line-height: 1.2;
     }
     
     .diary-list .event-item .event-meta {
-        gap: 12px;
-        font-size: 0.9rem;
-    }
-    
-    .diary-list .event-item .event-rating {
-        font-size: 1rem;
-    }
-    
-    .diary-list .event-item .event-date-block {
-        width: 80px;
-        border-left: 2px solid rgba(75, 85, 99, 0.4);
-        padding-left: 16px;
-        margin-left: 16px;
-        text-align: center;
-        flex-shrink: 0;
-    }
-    
-    .diary-list .event-item .event-month {
+        gap: 8px;
         font-size: 0.75rem;
     }
     
+    .diary-list .event-item .event-rating {
+        font-size: 0.8rem;
+    }
+    
+    .diary-list .event-item .event-date-block {
+        width: 70px;
+        min-width: 70px;
+        border: none;
+        padding: 10px 12px;
+        margin: 0 15px 0 0;
+        text-align: center;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+    }
+    
+    .diary-list .event-item .event-month {
+        font-size: 0.6rem;
+    }
+    
     .diary-list .event-item .event-day {
-        font-size: 2.5rem;
+        font-size: 0.9rem;
     }
     
     .diary-list .event-item .event-year {
-        font-size: 0.875rem;
+        font-size: 0.6rem;
     }
     
     /* Action buttons removed in mobile too */
@@ -1173,7 +1291,7 @@ body::before {
 .favorites-grid {
     display: flex;
     overflow-x: auto;
-    gap: 15px;
+    gap: 5px;
     padding-bottom: 10px;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1184,21 +1302,21 @@ body::before {
 }
 
 .favorites-grid .favorite-item {
-    width: 220px;
+    width: 180px;
     flex-shrink: 0;
     flex-grow: 0;
 }
 
 .favorites-grid.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     overflow-x: visible;
     padding-bottom: 0;
-    gap: 15px;
+    gap: 5px;
 }
 
 .favorites-grid.grid .favorite-item {
-    width: 220px;
+    width: 180px;
     flex-shrink: 0;
     flex-grow: 0;
 }
@@ -1206,20 +1324,20 @@ body::before {
 /* Mobil için daha küçük kartlar */
 @media (max-width: 768px) {
     .favorites-grid {
-        gap: 8px;
+        gap: 5px !important;
     }
     
     .favorites-grid .favorite-item {
-        width: 110px;
+        width: 120px;
     }
     
     .favorites-grid.grid {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 5px !important;
     }
     
     .favorites-grid.grid .favorite-item {
-        width: 110px;
+        width: 120px;
         flex-shrink: 0;
         flex-grow: 0;
     }
@@ -1227,17 +1345,21 @@ body::before {
 
 /* Çok küçük ekranlar için */
 @media (max-width: 480px) {
+    .favorites-grid {
+        gap: 5px !important;
+    }
+    
     .favorites-grid .favorite-item {
-        width: 90px;
+        width: 100px;
     }
     
     .favorites-grid.grid {
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 6px;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 5px !important;
     }
     
     .favorites-grid.grid .favorite-item {
-        width: 90px;
+        width: 100px;
         flex-shrink: 0;
         flex-grow: 0;
     }
@@ -1725,8 +1847,85 @@ body::before {
 /* Results Grid Styles */
 .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 5px;
+}
+
+/* Arama sonuçları kartları için mobil responsive */
+@media (max-width: 768px) {
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+        gap: 5px !important;
+    }
+    
+    .results-grid .item {
+        border-radius: 25px !important;
+        border: 2px solid transparent !important;
+        width: 120px !important;
+        max-width: 120px !important;
+    }
+    
+    .results-grid .item img {
+        aspect-ratio: 29/40 !important;
+        object-fit: cover !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .results-grid .item-info {
+        padding: 8px !important;
+    }
+    
+    .results-grid .item h3 {
+        font-size: 0.8rem !important;
+        margin: 0 0 3px 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        line-height: 1.1 !important;
+    }
+    
+    .results-grid .item p {
+        font-size: 0.65rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+        gap: 5px !important;
+    }
+    
+    .results-grid .item {
+        border-radius: 20px !important;
+        border: 2px solid transparent !important;
+        width: 100px !important;
+        max-width: 100px !important;
+    }
+    
+    .results-grid .item img {
+        aspect-ratio: 29/40 !important;
+        object-fit: cover !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    
+    .results-grid .item-info {
+        padding: 6px !important;
+    }
+    
+    .results-grid .item h3 {
+        font-size: 0.7rem !important;
+        margin: 0 0 2px 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        line-height: 1.1 !important;
+    }
+    
+    .results-grid .item p {
+        font-size: 0.6rem !important;
+    }
 }
 
 .item {
@@ -1769,75 +1968,6 @@ body::before {
     margin: 0;
     font-weight: 500;
 }
-
-/* Arama sonuçları kartları için mobil responsive */
-@media (max-width: 768px) {
-    .results-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 15px;
-    }
-    
-    .item {
-        border-radius: 25px;
-        border: 2px solid transparent;
-    }
-    
-    .item img {
-        aspect-ratio: 29/40;
-        object-fit: cover;
-    }
-    
-    .item-info {
-        padding: 12px;
-    }
-    
-    .item h3 {
-        font-size: 1rem;
-        margin: 0 0 4px 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    
-    .item p {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .results-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-    }
-    
-    .item {
-        border-radius: 20px;
-        border: 2px solid transparent;
-    }
-    
-    .item img {
-        aspect-ratio: 29/40;
-        object-fit: cover;
-    }
-    
-    .item-info {
-        padding: 10px;
-    }
-    
-    .item h3 {
-        font-size: 0.9rem;
-        margin: 0 0 3px 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    
-    .item p {
-        font-size: 0.7rem;
-    }
-}
-
-
 
 /* Modal styles */
 .modal {
@@ -2064,7 +2194,8 @@ body::before {
 /* Mobile responsive */
 @media (max-width: 768px) {
     .main-content {
-        padding: 20px;
+        padding: -1px;
+        padding-top: 15px;
     }
     .light-logo {
         font-size: 2.5rem;
@@ -3023,20 +3154,28 @@ body::before {
 
 /* Ana Kategori Stilleri */
 .main-category {
-    margin: 0 -10px 10px -10px;
+    margin: 0 5px 60px 5px;
     padding: 20px;
     background: rgba(255, 255, 255, 0);
     border-radius: 40px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgb(54, 54, 54);
 }
 
 .main-category-title {
     font-size: 3.5rem;
     font-weight: 900;
-    color: #ffffff;
+    color: #d3d3d3;
     margin: 0 0 30px 0;
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #2e2e2e;
+    padding: 15px 20px 20px 20px;
+    border-radius: 0;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Ana kategori içindeki favorites-section'lar için margin ayarı */
@@ -3051,24 +3190,26 @@ body::before {
 /* Mobil responsive */
 @media (max-width: 768px) {
     .main-category {
-        margin: 0 -5px 30px 5px;
+        margin: 0 5px 40px 5px;
         padding: 15px;
     }
     
     .main-category-title {
         font-size: 2.8rem;
         margin-bottom: 20px;
+        padding: 12px 15px;
     }
 }
 
 @media (max-width: 480px) {
     .main-category {
-        margin: 0 3px 25px 3px;
+        margin: 0 5px 35px 5px;
         padding: 12px;
     }
     
     .main-category-title {
         font-size: 2.4rem;
         margin-bottom: 15px;
+        padding: 10px 12px;
     }
 }

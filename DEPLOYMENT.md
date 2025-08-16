@@ -6,7 +6,7 @@ Bu rehber, halilboxd projenizi Vercel'e nasıl deploy edeceğinizi adım adım a
 
 1. **GitHub hesabı** - Projeniz GitHub'da olmalı
 2. **Vercel hesabı** - [vercel.com](https://vercel.com) üzerinden ücretsiz hesap oluşturun
-3. **OMDB API anahtarı** - [OMDB API](http://www.omdbapi.com/) sitesinden alın
+3. **Trakt API anahtarı** - [Trakt API](https://trakt.tv/oauth/applications) sitesinden alın
 
 ## 🔧 Adım Adım Deployment
 
@@ -54,9 +54,13 @@ Vercel otomatik olarak projenizi algılayacaktır. Ayarları şu şekilde yapıl
 1. Vercel proje ayarlarında "Environment Variables" sekmesine gidin
 2. Aşağıdaki değişkenleri ekleyin:
 
-#### OMDB API Key
-- **Name**: `OMDB_API_KEY`
-- **Value**: OMDB API anahtarınız (örn: `dba94306`)
+#### Trakt API Keys
+- **Name**: `TRAKT_CLIENT_ID`
+- **Value**: Trakt API Client ID'niz
+- **Environment**: Production, Preview, Development (hepsini seçin)
+
+- **Name**: `TRAKT_CLIENT_SECRET`
+- **Value**: Trakt API Client Secret'ınız
 - **Environment**: Production, Preview, Development (hepsini seçin)
 
 #### Firebase Config (Opsiyonel)
@@ -97,9 +101,9 @@ Error: Cannot find module 'express'
 ```
 **Çözüm**: `package.json` dosyasında `dependencies` bölümünün doğru olduğundan emin olun.
 
-#### 2. "OMDB_API_KEY is not defined" Hatası
+#### 2. "TRAKT_CLIENT_ID is not defined" Hatası
 ```
-Error: OMDB_API_KEY is not defined
+Error: TRAKT_CLIENT_ID is not defined
 ```
 **Çözüm**: Environment variable'ı doğru şekilde eklediğinizden emin olun.
 

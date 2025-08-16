@@ -2,12 +2,12 @@
 
 **Letterboxd bizi kıskanıyor!** 
 
-halilboxd, film ve dizi arama, favori listesi oluşturma ve izleme geçmişi takibi yapabileceğiniz modern bir web uygulamasıdır. OMDB API kullanarak film/dizi bilgilerini çeker ve Firebase ile kullanıcı kimlik doğrulaması sağlar.
+halilboxd, film ve dizi arama, favori listesi oluşturma ve izleme geçmişi takibi yapabileceğiniz modern bir web uygulamasıdır. Trakt API kullanarak film/dizi bilgilerini çeker ve Firebase ile kullanıcı kimlik doğrulaması sağlar.
 
 ## ✨ Özellikler
 
 ### 🎯 Temel Özellikler
-- **Film ve Dizi Arama**: OMDB API ile gerçek zamanlı arama
+- **Film ve Dizi Arama**: Trakt API ile gerçek zamanlı arama
 - **Detaylı Bilgiler**: Poster, yıl, tür, süre, yönetmen, oyuncular, puan ve özet
 - **Kullanıcı Kimlik Doğrulaması**: Firebase Authentication ile güvenli giriş
 - **Favori Listeleri**: Film ve dizileri favorilere ekleme
@@ -33,7 +33,7 @@ halilboxd, film ve dizi arama, favori listesi oluşturma ve izleme geçmişi tak
 - Node.js (v14 veya üzeri)
 - npm veya yarn
 - Firebase hesabı
-- OMDB API anahtarı
+- Trakt API anahtarı
 
 ### Adım Adım Kurulum
 
@@ -54,10 +54,11 @@ npm install
    - Web uygulaması ekleyin
    - `FIREBASE_SETUP.md` dosyasındaki adımları takip edin
 
-4. **OMDB API anahtarı alın**
-   - [OMDB API](http://www.omdbapi.com/) sitesine gidin
-   - Ücretsiz API anahtarı alın
-   - `server.js` dosyasında `OMDB_API_KEY` değişkenini güncelleyin
+4. **Trakt API anahtarı alın**
+   - [Trakt API](https://trakt.tv/oauth/applications) sitesine gidin
+   - Yeni uygulama oluşturun
+   - Client ID ve Client Secret alın
+   - `server.js` dosyasında `TRAKT_CLIENT_ID` ve `TRAKT_CLIENT_SECRET` değişkenlerini güncelleyin
 
 5. **Uygulamayı başlatın**
 ```bash
@@ -86,7 +87,7 @@ http://localhost:8000
 ### Veritabanı & Kimlik Doğrulama
 - **Firebase Authentication**: Kullanıcı kimlik doğrulaması
 - **Firebase Firestore**: Veri depolama (opsiyonel)
-- **OMDB API**: Film/dizi verileri
+- **Trakt API**: Film/dizi verileri
 
 ## 📁 Proje Yapısı
 
@@ -150,7 +151,8 @@ Belirli bir film/dizinin detaylı bilgilerini getirir.
 1. Vercel hesabı oluşturun
 2. GitHub reponuzu bağlayın
 3. Environment variables ekleyin:
-   - `OMDB_API_KEY`
+   - `TRAKT_CLIENT_ID`
+   - `TRAKT_CLIENT_SECRET`
    - Firebase config bilgileri
 4. Deploy edin
 
@@ -174,7 +176,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## 🙏 Teşekkürler
 
-- [OMDB API](http://www.omdbapi.com/) - Film/dizi verileri için
+- [Trakt API](https://trakt.tv/oauth/applications) - Film/dizi verileri için
 - [Firebase](https://firebase.google.com/) - Kimlik doğrulama ve veritabanı için
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework için
 - [Font Awesome](https://fontawesome.com/) - İkonlar için
